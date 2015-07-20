@@ -6,7 +6,12 @@
 </head>
 
 <body ng-app="QlFightApp">
-<header>
+<header ng-controller="headerController">
+    <ul>
+        <li><button type="button" ng-click="location.path('/')">Server List</button></li>
+        <li><button type="button" ng-click="location.path('/matches')">Matches</button></li>
+        <li><button type="button" ng-click="location.path('/match')">Match</button></li>
+    </ul>
 </header>
 
 <main><ng-view></ng-view></main>
