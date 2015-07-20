@@ -4,9 +4,16 @@ module.controller('headerController', function($scope, $location) {
     $scope.location = $location;
 });
 
-module.controller('tourneysController', function($scope, apiService) {
+module.controller('serversController', function($scope, apiService) {
     $scope.test = '';
-    apiService.tourneys().success(function(response) {
+    apiService.servers().success(function(response) {
+        $scope.test = response;
+    });
+});
+
+module.controller('serverController', function($scope, apiService) {
+    $scope.test = '';
+    apiService.server(804266).success(function(response) {
         $scope.test = response;
     });
 });

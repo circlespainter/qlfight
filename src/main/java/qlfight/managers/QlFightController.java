@@ -1,12 +1,10 @@
-package qlfight.controllers;
+package qlfight.managers;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import justweb.AppException;
-import qlfight.qlapi.MatchId;
-import qlfight.qlapi.QlApiService;
-import qlfight.qlapi.ServerListFilter;
+import qlfight.qlapi.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -38,11 +36,11 @@ public class QlFightController {
     }
 
     @Suspendable
-    public String tourneys() {
-        ServerListFilter filter = new ServerListFilter(ServerListFilter.GameType.DUEL);
-        filter.filters.state = ServerListFilter.GameState.IN_PROGRESS;
+    public ServerList tourneys() {
+        ServerListFilter filter = new ServerListFilter(GameType.DUEL);
+        filter.filters.state = GameState.IN_PROGRESS;
 
-        String list = null;
+        ServerList list = null;
         try {
             list = ql.serverList(filter);
         } catch (InterruptedException e) {
@@ -54,6 +52,21 @@ public class QlFightController {
         }
 
         return list;
+    }
+
+    @Suspendable
+    public ServerDetails[] server(Integer serverId) {
+        ServerDetails[] details = null;
+        try {
+            details = ql.serverDetails(serverId, 804192);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        return details;
     }
 
     @Suspendable
@@ -76,7 +89,7 @@ public class QlFightController {
     public Object match() {
         String details = null;
         try {
-            details = ql.matchDetails(new MatchId("2d9d94fe-2e32-11e5-9129-0242ac11001c", MatchId.GameType.DUEL.value, "1"));
+            details = ql.matchDetails(new MatchId("2d9d94fe-2e32-11e5-9129-0242ac11001c", GameType.DUEL, "1"));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -84,6 +97,7 @@ public class QlFightController {
         } catch (TimeoutException e) {
             e.printStackTrace();
         }
+
         return details;
     }
 

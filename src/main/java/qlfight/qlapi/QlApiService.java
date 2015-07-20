@@ -7,6 +7,7 @@ import justweb.AppException;
 import justweb.jetty.client.FiberJettyHttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.regex.Pattern;
 
 public class QlApiService {
 
-    private static final Pattern P_MATCHE_IDS = Pattern.compile("<div class=\"areaMapC\" id=\"(?<id>[\\w\\-]+)\">");
+    private static final Pattern P_MATCH_IDS = Pattern.compile("<div class=\"areaMapC\" id=\"(?<id>[\\w\\-]+)\">");
 
     private final FiberJettyHttpClient http;
     private final ObjectMapper jackson;
@@ -28,8 +29,8 @@ public class QlApiService {
     }
 
     @Suspendable
-    public String serverList(ServerListFilter filter) throws InterruptedException, ExecutionException, TimeoutException {
-        byte[] bytes = null;
+    public ServerList serverList(ServerListFilter filter) throws InterruptedException, ExecutionException, TimeoutException {
+        byte[] bytes;
         try {
             bytes = jackson.writeValueAsBytes(filter);
         } catch (JsonProcessingException e) {
@@ -37,15 +38,42 @@ public class QlApiService {
         }
 
         String base64 = Base64.getEncoder().encodeToString(bytes);
-        ContentResponse response = null;
-        response = http.get("http://www.quakelive.com/browser/list?filter=" + base64);
-        return response.getContentAsString();
+        ContentResponse response = http.get("http://www.quakelive.com/browser/list?filter=" + base64);
+        byte[] content = response.getContent(); // TODO: byte copies, try to avoid
+
+        ServerList serverList;
+        try {
+            serverList = jackson.readValue(content, ServerList.class);
+        } catch (IOException e) {
+            throw new AppException(e);
+        }
+
+        return serverList;
     }
 
     @Suspendable
-    public String serverDetails(String id) throws InterruptedException, ExecutionException, TimeoutException {
-        ContentResponse response = http.get("http://www.quakelive.com/browser/details?ids=" + id);
-        return response.getContentAsString();
+    public ServerDetails[] serverDetails(Integer... ids) throws InterruptedException, ExecutionException, TimeoutException {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Integer id : ids) {
+            if (first)
+                first = false;
+            else
+                sb.append(",");
+            sb.append(id);
+        }
+
+        ContentResponse response = http.get("http://www.quakelive.com/browser/details?ids=" + sb.toString());
+        byte[] content = response.getContent();
+
+        ServerDetails[] details;
+        try {
+            details = jackson.readValue(content, ServerDetails[].class);
+        } catch (IOException e) {
+            throw new AppException(e);
+        }
+
+        return details;
     }
 
     /**
@@ -68,7 +96,7 @@ public class QlApiService {
     public List<MatchId> matchesByWeek(String playerName, String date) throws InterruptedException, ExecutionException, TimeoutException {
         ContentResponse response = http.get("http://www.quakelive.com/profile/matches_by_week/" + playerName + '/' + date);
         String html = response.getContentAsString();
-        Matcher matcher = P_MATCHE_IDS.matcher(html);
+        Matcher matcher = P_MATCH_IDS.matcher(html);
 
         List<MatchId> ids = new ArrayList<>();
         while (matcher.find()) {
@@ -91,6 +119,5 @@ public class QlApiService {
     public String matchDetails(MatchId id) throws InterruptedException, ExecutionException, TimeoutException {
         return http.get("http://www.quakelive.com/stats/matchdetails/" + id.url()).getContentAsString();
     }
-
 
 }

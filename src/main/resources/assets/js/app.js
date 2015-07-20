@@ -6,7 +6,8 @@ var module = angular.module('QlFightApp', [
 
 module.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
-    when("/", {templateUrl: "partials/test.html", controller: "tourneysController"}).
+    when("/", {templateUrl: "partials/test.html", controller: "serversController"}).
+    when("/server", {templateUrl: "partials/test.html", controller: "serverController"}).
     when("/matches", {templateUrl: "partials/test.html", controller: "matchesController"}).
     when("/match", {templateUrl: "partials/test.html", controller: "matchController"}).
     otherwise({redirectTo: '/'});

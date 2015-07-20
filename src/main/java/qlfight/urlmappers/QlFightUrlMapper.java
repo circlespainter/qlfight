@@ -3,7 +3,7 @@ package qlfight.urlmappers;
 import co.paralleluniverse.fibers.Suspendable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import justweb.urlmapper.RestUrlMapper;
-import qlfight.controllers.QlFightController;
+import qlfight.managers.QlFightController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 public class QlFightUrlMapper extends RestUrlMapper {
 
+    private static final Pattern P_SERVER = Pattern.compile("^/api/server/(?<id>\\d+)");
     private static final Pattern P_MATCH = Pattern.compile("^/api/matches/(?<id>\\d+)");
 
     private final QlFightController controller;
@@ -34,9 +35,15 @@ public class QlFightUrlMapper extends RestUrlMapper {
                 return true;
             }
 
-            if (path.equals("/api/tourneys")) {
+            if (path.equals("/api/servers")) {
                 jsonResponse(response, controller.tourneys());
                 return true;
+            }
+
+            matcher = P_SERVER.matcher(path);
+            if (matcher.find()) {
+                String id = matcher.group("id");
+                jsonResponse(response, controller.server(Integer.parseInt(id)));
             }
 
             matcher = P_MATCH.matcher(path);

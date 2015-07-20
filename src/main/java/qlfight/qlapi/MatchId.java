@@ -16,22 +16,11 @@ public class MatchId {
         this.url = publicId + "/" + gameType + (oldEid != null ? ("/" + oldEid) : "");
     }
 
+    public MatchId(String publicId, GameType gameType, String oldEid) {
+        this(publicId, gameType.name, oldEid);
+    }
+
     public String url() {
         return url;
     }
-
-    public enum GameType {
-        DUEL("duel");
-
-        public final String value;
-        GameType(String value) {
-            this.value = value;
-        }
-
-        public static GameType fromString(String value) {
-            if (DUEL.value.equals(value)) return DUEL;
-            return null;
-        }
-    }
-
 }

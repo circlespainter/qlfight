@@ -1,6 +1,6 @@
 package qlfight;
 
-import qlfight.controllers.QlFightController;
+import qlfight.managers.QlFightController;
 import qlfight.qlapi.QlApiService;
 import qlfight.urlmappers.QlFightUrlMapper;
 
