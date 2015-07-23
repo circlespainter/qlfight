@@ -51,6 +51,22 @@ public enum GameType {
         return null;
     }
 
+    public static GameType fromName(String name) {
+        if (FFA.name.equals(name)) return FFA;
+        if (CA.name.equals(name)) return CA;
+        if (CTF.name.equals(name)) return CTF;
+        if (TDM.name.equals(name)) return TDM;
+        if (DUEL.name.equals(name)) return DUEL;
+        if (DOM.name.equals(name)) return DOM;
+        if (ONEFCTF.name.equals(name)) return ONEFCTF;
+        if (AD.name.equals(name)) return AD;
+        if (FT.name.equals(name)) return FT;
+        if (HAR.name.equals(name)) return HAR;
+        if (RACE.name.equals(name)) return RACE;
+        if (RR.name.equals(name)) return RR;
+        return null;
+    }
+
     public static class IntValuesSerializer extends JsonSerializer<GameType[]> {
         @Override
         public void serialize(GameType[] gameTypes, JsonGenerator gen, SerializerProvider serializers)

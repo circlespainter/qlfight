@@ -10,5 +10,6 @@ module.config(['$routeProvider', function($routeProvider) {
     when("/server", {templateUrl: "partials/test.html", controller: "serverController"}).
     when("/matches", {templateUrl: "partials/test.html", controller: "matchesController"}).
     when("/match", {templateUrl: "partials/test.html", controller: "matchController"}).
+    when("/tourney", {templateUrl: "partials/test.html", controller: "tourneyController"}).
     otherwise({redirectTo: '/'});
 }]);

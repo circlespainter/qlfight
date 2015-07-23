@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public enum GameState {
 
-    ANY("any"), IN_PROGRESS("IN_PROGRESS");
+    ANY("any"), IN_PROGRESS("IN_PROGRESS"), POPULATED("POPULATED"), PRE_GAME("PRE_GAME"), EMPTY("EMPTY");
 
     public final String value;
 
@@ -23,6 +23,9 @@ public enum GameState {
     public static GameState fromValue(String value) {
         if (ANY.value.equals(value)) return ANY;
         if (IN_PROGRESS.value.equals(value)) return IN_PROGRESS;
+        if (POPULATED.value.equals(value)) return POPULATED;
+        if (PRE_GAME.value.equals(value)) return PRE_GAME;
+        if (EMPTY.value.equals(value)) return EMPTY;
         return null;
     }
 

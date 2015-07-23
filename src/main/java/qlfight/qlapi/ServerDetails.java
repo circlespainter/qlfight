@@ -3,6 +3,8 @@ package qlfight.qlapi;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import java.time.Instant;
+
 public class ServerDetails extends Server {
 
     public final Integer ecode;
@@ -41,7 +43,7 @@ public class ServerDetails extends Server {
             @JsonProperty("g_instagib") Boolean instagib,
             @JsonProperty("ECODE") Integer ecode,
             @JsonProperty("g_levelstarttime") Integer levelStartTime,
-            @JsonProperty("players") ServerPlayer[] players,
+            @JsonProperty("byNames") ServerPlayer[] players,
             @JsonProperty("roundtimelimit") Integer roundTimeLimit,
             @JsonProperty("map_title") String mapTitle,
             @JsonProperty("scorelimit") String scoreLimit,
@@ -80,5 +82,9 @@ public class ServerDetails extends Server {
                 names[i] = player.name;
         }
         return names;
+    }
+
+    public Instant levelStartTime() {
+        return Instant.ofEpochSecond(levelStartTime);
     }
 }

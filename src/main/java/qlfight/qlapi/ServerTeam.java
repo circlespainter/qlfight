@@ -23,7 +23,7 @@ public enum ServerTeam {
         return null;
     }
 
-    public class Deserializer extends JsonDeserializer<ServerTeam> {
+    public static class Deserializer extends JsonDeserializer<ServerTeam> {
         @Override
         public ServerTeam deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
             return ServerTeam.fromValue(p.getIntValue());

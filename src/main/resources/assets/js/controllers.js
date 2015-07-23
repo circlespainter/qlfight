@@ -31,3 +31,10 @@ module.controller('matchController', function($scope, apiService) {
         $scope.test = response;
     });
 });
+
+module.controller('tourneyController', function($scope, apiService) {
+    $scope.test = '';
+    apiService.tourney().success(function(response) {
+        $scope.test = response;
+    });
+});

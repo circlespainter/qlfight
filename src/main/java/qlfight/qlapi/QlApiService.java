@@ -8,6 +8,8 @@ import justweb.jetty.client.FiberJettyHttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -93,8 +95,9 @@ public class QlApiService {
      * @throws TimeoutException
      */
     @Suspendable
-    public List<MatchId> matchesByWeek(String playerName, String date) throws InterruptedException, ExecutionException, TimeoutException {
-        ContentResponse response = http.get("http://www.quakelive.com/profile/matches_by_week/" + playerName + '/' + date);
+    public List<MatchId> matchesByWeek(String playerName, LocalDate date) throws InterruptedException, ExecutionException, TimeoutException {
+        String urlDate = DateTimeFormatter.ISO_LOCAL_DATE.format(date);
+        ContentResponse response = http.get("http://www.quakelive.com/profile/matches_by_week/" + playerName + '/' + urlDate);
         String html = response.getContentAsString();
         Matcher matcher = P_MATCH_IDS.matcher(html);
 
@@ -116,8 +119,18 @@ public class QlApiService {
     }
 
     @Suspendable
-    public String matchDetails(MatchId id) throws InterruptedException, ExecutionException, TimeoutException {
-        return http.get("http://www.quakelive.com/stats/matchdetails/" + id.url()).getContentAsString();
+    public MatchDetails matchDetails(MatchId id) throws InterruptedException, ExecutionException, TimeoutException {
+        ContentResponse response = http.get("http://www.quakelive.com/stats/matchdetails/" + id.url());
+        byte[] content = response.getContent();
+
+        MatchDetails details;
+        try {
+            details = jackson.readValue(content, MatchDetails.class);
+        } catch (IOException e) {
+            throw new AppException(e);
+        }
+
+        return details;
     }
 
 }

@@ -19,5 +19,9 @@ module.factory('apiService', function($http) {
         return $http.get('http://localhost:7070/api/match');
     }
 
+    api.tourney = function() {
+        return $http.get('http://localhost:7070/api/tourney');
+    }
+
     return api;
 });

@@ -9,6 +9,8 @@ import qlfight.qlapi.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -37,7 +39,8 @@ public class QlFightController {
 
     @Suspendable
     public ServerList tourneys() {
-        ServerListFilter filter = new ServerListFilter(GameType.DUEL);
+        ServerListFilter filter = new ServerListFilter();
+        filter.gameType(GameType.DUEL);
         filter.filters.state = GameState.IN_PROGRESS;
 
         ServerList list = null;
@@ -73,7 +76,7 @@ public class QlFightController {
     public Object matches(String id) {
         Object ids = null;
         try {
-            ids = ql.matchesByWeek("Taake", "2015-07-20");
+            ids = ql.matchesByWeek("Taake", LocalDate.now(TimeZone.getTimeZone("UTC").toZoneId()));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -87,7 +90,7 @@ public class QlFightController {
 
     @Suspendable
     public Object match() {
-        String details = null;
+        MatchDetails details = null;
         try {
             details = ql.matchDetails(new MatchId("2d9d94fe-2e32-11e5-9129-0242ac11001c", GameType.DUEL, "1"));
         } catch (InterruptedException e) {
