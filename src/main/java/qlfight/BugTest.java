@@ -18,7 +18,9 @@ public class BugTest {
             new Fiber<Void>() {
                 @Override
                 protected Void run() throws SuspendExecution, InterruptedException {
-                    TourneyManager man = new Registry(new Settings()).tourneyManager();
+//                    new Test().jo();
+                    QlFight app = new QlFight();
+                    TourneyManager man = app.registry.tourneyManager();
                     man.collectPlayers(GameType.DUEL, Location.EUROPE);
                     return null;
                 }
@@ -40,7 +42,8 @@ public class BugTest {
                     "h34dhunt3r", "critical_error", "icanbeatyou", "drtribe", "athrandir", "demi", "lemma_", "harry_z_tybetu",
                     "andjey_", "fausto_laporte", "lamidex", "tonton_"};
 
-            PlayerManager man = new Registry(new Settings()).playerManager();
+            QlFight app = new QlFight();
+            PlayerManager man = app.registry.playerManager();
             for (String name : names) {
                 Player player = man.register(name);
                 man.initGameType(player, GameType.DUEL);

@@ -71,7 +71,7 @@ public class Registry extends justweb.Registry {
 
     public TourneyManager tourneyManager() {
         if (tourneyManager == null) {
-            tourneyManager = new TourneyManager(qlApiService(), playerManager(), tourneyDao(), playerDao());
+            tourneyManager = new TourneyManager(qlApiService(), playerManager(), tourneyDao(), playerDao(), qlRanksService());
         }
 
         return tourneyManager;

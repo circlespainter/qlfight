@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 import qlfight.daos.PlayerDao;
 import qlfight.daos.TourneyDao;
 import qlfight.models.Player;
+import qlfight.models.PlayerGameType;
 import qlfight.qlapi.*;
+import qlfight.services.QlRanksService;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,17 +20,19 @@ import java.util.concurrent.TimeoutException;
 
 public class TourneyManager {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final QlApiService ql;
     private final PlayerManager playerManager;
     private final TourneyDao tourneyDao;
     private final PlayerDao playerDao;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final QlRanksService qlRanks;
 
-    public TourneyManager(QlApiService ql, PlayerManager playerManager, TourneyDao tourneyDao, PlayerDao playerDao) {
+    public TourneyManager(QlApiService ql, PlayerManager playerManager, TourneyDao tourneyDao, PlayerDao playerDao, QlRanksService qlRanks) {
         this.ql = ql;
         this.playerManager = playerManager;
         this.tourneyDao = tourneyDao;
         this.playerDao = playerDao;
+        this.qlRanks = qlRanks;
     }
 
     @Suspendable
@@ -89,6 +93,28 @@ public class TourneyManager {
 
         for (String unregistered : currentPlayers) {
             Player registered = playerManager.register(unregistered);
+//            Player player = playerManager.register(unregistered);
+//            log.info("Initializing game type '{}' for player: {}", gameType.name, player);
+//            if (player.gameType(gameType) != null) {
+//                log.info("Game type already initialized, exiting.");
+//                continue;
+//            }
+//
+//            int elo = 1200;
+//
+//            QlRanksService.GameType ranksGameType = QlRanksService.GameType.fromQl(gameType);
+//            if (ranksGameType != null) {
+//                elo = qlRanks.elo(ranksGameType, player.name);
+//            }
+//            else {
+//                log.info("No QlRanks elo available for game type: {}", gameType.name);
+//            }
+//
+//            PlayerGameType playerGameType = new PlayerGameType(gameType);
+//            playerGameType.elo(elo);
+//            player.gameTypes.add(playerGameType);
+//            playerDao.addGameType(player, playerGameType);
+//            registeredPlayers.add(player);
             registered = playerManager.initGameType(registered, gameType);
             registeredPlayers.add(registered);
         }
