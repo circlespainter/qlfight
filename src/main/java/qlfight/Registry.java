@@ -23,8 +23,8 @@ public class Registry extends justweb.Registry {
     private PlayerDao playerDao;
     private TourneyDao tourneyDao;
 
-    public Registry(justweb.Settings settings) {
-        super(settings);
+    public Registry(QlFight app) {
+        super(app);
     }
 
     @Override
@@ -92,5 +92,4 @@ public class Registry extends justweb.Registry {
 
         return tourneyDao;
     }
-
 }

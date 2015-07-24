@@ -1,8 +1,9 @@
 package qlfight;
 
+import justweb.Application;
+
 public class Settings extends justweb.Settings {
-    @Override
-    public String appName() {
-        return "qlfight";
+    public Settings(Application app) {
+        super(app);
     }
 }
