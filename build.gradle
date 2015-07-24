@@ -1,11 +1,16 @@
 apply plugin: 'java'
+apply plugin: 'application'
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 version = '1.0'
 
 task wrapper(type: Wrapper) {
   gradleVersion = '2.4'
 }
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 repositories {
     mavenCentral()
@@ -13,11 +18,45 @@ repositories {
     maven {
         url 'http://gastmeier.com/maven/'
     }
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}
+
+configurations {
+    quasar
+}
+
+configurations.all {
+    resolutionStrategy {
+        failOnVersionConflict()
+
+        force "org.slf4j:slf4j-api:1.7.12"
+        force "com.google.guava:guava:18.0"
+        force "co.paralleluniverse:quasar-core:0.8.0-SNAPSHOT"
+    }
 }
 
 dependencies {
     compile group: 'co.justweb', name: 'justweb', version: '0.1.7'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.3'
+    compile "co.paralleluniverse:quasar-core:0.8.0-SNAPSHOT:jdk8"
 
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    quasar "co.paralleluniverse:quasar-core:0.8.0-SNAPSHOT:jdk8@jar"
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
+
+applicationDefaultJvmArgs = [
+    "-javaagent:${configurations.quasar.singleFile}=vdc" // =v, =d
+]
+
+mainClassName = "qlfight.BugTest"
+
+run {
+    systemProperty "co.paralleluniverse.fibers.verifyInstrumentation", "true"
+    systemProperty "co.paralleluniverse.fibers.detectRunawayFibers", "false"
+    systemProperty "co.paralleluniverse.fibers.writeInstrumentedClassesStartingWith", "qlfight"
+}
+
+defaultTasks 'run'

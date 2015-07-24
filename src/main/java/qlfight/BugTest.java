@@ -18,7 +18,7 @@ public class BugTest {
             new Fiber<Void>() {
                 @Override
                 protected Void run() throws SuspendExecution, InterruptedException {
-//                    new Test().jo();
+                    new Test().jo();
                     QlFight app = new QlFight();
                     TourneyManager man = app.registry.tourneyManager();
                     man.collectPlayers(GameType.DUEL, Location.EUROPE);
